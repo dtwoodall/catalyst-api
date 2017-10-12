@@ -21,7 +21,7 @@ const authCheck = jwt({
 });
 
 // Database setup
-const sequelize = new Sequelize('postgres://postgres:Pg11235!@localhost:5432/scheduler');
+const sequelize = new Sequelize(process.env.DATABASE_URL);
 
 const formats = {
   COLOR: {
