@@ -69,7 +69,7 @@ const app = express();
 app.use(bodyParser.json());
 
 app.use(cors({
-  origin: 'http://localhost:3000'
+  origin: process.env.NODE_ENV === 'production' ? 'https://dt-catalyst.herokuapp.com' : 'http://localhost:3000'
 }));
 
 app.options('*', cors());
