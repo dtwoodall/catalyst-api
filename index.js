@@ -28,7 +28,7 @@ const formats = {
     is: /^#([0-9A-F]{3}|[0-9A-F]{6})$/
   },
   STATUS: {
-    in: ['Not Started', 'In Progress']
+    in: ['Not started', 'In progress', 'On hold', 'Completed', 'Cancelled']
   }
 }
 
