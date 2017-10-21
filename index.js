@@ -28,7 +28,7 @@ const formats = {
     is: /^#([0-9A-F]{3}|[0-9A-F]{6})$/
   },
   STATUS: {
-    in: ['Not started', 'In progress', 'On hold', 'Completed', 'Cancelled']
+    isIn: [['Not started', 'In progress', 'On hold', 'Completed', 'Cancelled']]
   }
 }
 
@@ -77,7 +77,7 @@ app.options('*', cors());
 app.get('/tasks', authCheck, (req, res) => {
 
   Task.findAll({
-    attributes: ['id', 'summary', 'description', 'categoryId', 'parentId'],
+    attributes: ['id', 'summary', 'status', 'description', 'categoryId', 'parentId'],
     include: [{
       model: Category,
       attributes: ['id', 'name', 'color']
@@ -89,7 +89,7 @@ app.get('/tasks', authCheck, (req, res) => {
 app.get('/tasks/:taskId', authCheck, (req, res) => {
 
   Task.findOne({
-    attributes: ['id', 'summary', 'description', 'categoryId', 'parentId'],
+    attributes: ['id', 'summary', 'status', 'description', 'categoryId', 'parentId'],
     where: {
       id: req.params.taskId
     },
@@ -109,9 +109,9 @@ app.get('/tasks/:taskId', authCheck, (req, res) => {
 
 app.post('/tasks', authCheck, (req, res) => {
 
-  const {summary, description, categoryId, parentId} = req.body;
+  const {summary, status, description, categoryId, parentId} = req.body;
 
-  Task.create({summary, description, categoryId, parentId}).then(newTask => {
+  Task.create({summary, status, description, categoryId, parentId}).then(newTask => {
     return res.json(newTask);
   }).catch(err => console.log(err));
 
@@ -119,10 +119,10 @@ app.post('/tasks', authCheck, (req, res) => {
 
 app.post('/tasks/:taskId', authCheck, (req, res) => {
 
-  const {summary, description, categoryId} = req.body;
+  const {summary, status, description, categoryId} = req.body;
 
   return Task.findOne({
-    attributes: ['id', 'summary', 'description', 'categoryId', 'parentId'],
+    attributes: ['id', 'summary', 'status', 'description', 'categoryId', 'parentId'],
     where: {
       id: req.params.taskId
     },
@@ -133,11 +133,11 @@ app.post('/tasks/:taskId', authCheck, (req, res) => {
       }, {
         model: Task,
         as: 'subtasks',
-        attributes: ['id', 'summary', 'description', 'parentId']
+        attributes: ['id', 'summary', 'status', 'description', 'parentId']
       }
     ]
   }).then(task => {
-    return task.update({summary, description, categoryId}).then(updatedTask => {
+    return task.update({summary, status, description, categoryId}).then(updatedTask => {
       return res.json(updatedTask);
     }).catch(err => console.log(err));
   }).catch(err => console.log(err));
@@ -210,10 +210,5 @@ app.get('/*', (req, res) => {
 
 const port = process.env.PORT || 5000;
 app.listen(port);
-
-
-const client = express();
-client.use(express.static('client'));
-client.listen(3000);
 
 console.log(`Scheduler listening on ${port}`);
